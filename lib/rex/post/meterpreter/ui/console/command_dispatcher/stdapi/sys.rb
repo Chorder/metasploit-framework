@@ -259,7 +259,7 @@ class Console::CommandDispatcher::Stdapi::Sys
         print_error( "Failed to spawn shell with thread impersonation. Retrying without it." )
         cmd_execute("-f", path, "-c", "-H", "-i")
       end
-    when 'linux'
+    when 'linux', 'osx'
       # Don't expand_path() this because it's literal anyway
       path = "/bin/sh"
       cmd_execute("-f", path, "-c", "-i")
@@ -840,12 +840,16 @@ class Console::CommandDispatcher::Stdapi::Sys
           end
 
           v = open_key.query_value(value)
+          data = v.data
+          if v.type == REG_BINARY
+            data = data.unpack('H*')[0]
+          end
 
           print(
             "Key: #{key}\n" +
             "Name: #{v.name}\n" +
             "Type: #{v.type_to_s}\n" +
-            "Data: #{v.data}\n")
+            "Data: #{data}\n")
 
         when "queryclass"
           open_key = nil
@@ -894,13 +898,21 @@ class Console::CommandDispatcher::Stdapi::Sys
     if args.include? "-h"
       cmd_getprivs_help
     end
-    print_line("=" * 60)
-    print_line("Enabled Process Privileges")
-    print_line("=" * 60)
+
+    table = Rex::Text::Table.new(
+      'Header'    => 'Enabled Process Privileges',
+      'Indent'    => 0,
+      'SortIndex' => 1,
+      'Columns'   => ['Name']
+    )
+
+    privs = client.sys.config.getprivs
     client.sys.config.getprivs.each do |priv|
-      print_line("  #{priv}")
+      table << [priv]
     end
-    print_line("")
+
+    print_line
+    print_line(table.to_s)
   end
 
   #

@@ -1,5 +1,5 @@
 ##
-# This module requires Metasploit: http://metasploit.com/download
+# This module requires Metasploit: https://metasploit.com/download
 # Current source: https://github.com/rapid7/metasploit-framework
 ##
 
@@ -10,7 +10,7 @@ require 'msf/base/sessions/meterpreter_aarch64_linux'
 
 module MetasploitModule
 
-  CachedSize = 652264
+  CachedSize = 968136
 
   include Msf::Payload::Single
   include Msf::Sessions::MeterpreterOptions
@@ -24,7 +24,8 @@ module MetasploitModule
         'Description'   => 'Run the Meterpreter / Mettle server payload (stageless)',
         'Author'        => [
           'Adam Cammack <adam_cammack[at]rapid7.com>',
-          'Brent Cook <brent_cook[at]rapid7.com>'
+          'Brent Cook <brent_cook[at]rapid7.com>',
+          'timwr'
         ],
         'Platform'      => 'linux',
         'Arch'          => ARCH_AARCH64,
